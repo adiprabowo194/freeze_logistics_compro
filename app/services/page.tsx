@@ -26,14 +26,14 @@ export default function Home() {
   return (
     <div className="py-8">
       <section
-        className="relative w-full md:py-16 py-8 md:min-h-[480px] min-h-[500px]
+        className="relative w-full md:py-16 py-8 md:min-h-[480px] min-h-[490px]
   md:bg-[length:120%]  bg-[length:200%]
   bg-no-repeat md:bg-center bg-left-top"
         style={{ backgroundImage: "url('/assets/truck_banner.webp')" }}
       >
         <div className="absolute inset-0 bg-[#4267D7]/80"></div>
 
-        <div className=" absolute inset-0 mx-auto md:top-60 top-70 container">
+        <div className="absolute inset-0 mx-auto md:top-60 top-80 container">
           <div className="md:w-7/8 w-full md:px-10 px-4  text-center">
             <div className="box-content  md:pt-8 pt-2 py-2 px-2 md:px-4">
               <h2 className="md:text-5xl/tight text-3xl/tight font-bold  text-white">

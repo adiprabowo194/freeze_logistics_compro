@@ -22,18 +22,18 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="py-8">
-      <section className="hero items-center w-full md:py-38 py-18 container mx-auto">
+    <div className="py-8 mt-8">
+      <section className="hero items-center w-full md:py-38 py-18 container mx-auto mt-4">
         <div className="hero-row">
           <div className="flex flex-col items-center md:text-center text-left px-2 md:px-8">
             <h1 className="md:text-5xl/tight text-4xl/tight font-bold text-center  px-2 md:px-8">
-              <div className="">
+              <div className="mt-8">
                 We're Making{" "}
                 <span className="bg-[linear-gradient(90deg,#4267D7_32%,#3ACDFF_100%)] bg-clip-text text-transparent inline-block">
                   Cold Freight
                 </span>
               </div>
-              <div>Simple</div>
+              <div>Simples</div>
             </h1>
             <h3 className="md:text-base/tight text-xs py-6 md:max-w-3xl w-full text-center tracking-widest px-4 ">
               Freeze Logistics is a specialised cold freight company dedicated

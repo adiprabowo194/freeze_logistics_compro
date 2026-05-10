@@ -48,10 +48,10 @@ export default function Home() {
         }}
       >
         <div className="absolute inset-0 bg-[#4267D7]/80 object-center"></div>
-        <div className=" absolute inset-0 mx-auto text-center container  top-60">
-          <div className="md:w-7/8 w-full md:px-10 px-4 mx-auto ">
-            <div className="box-content  md:pt-8 pt-2 py-2 px-2 md:px-4 0">
-              <h2 className="md:text-5xl/tight text-3xl/tight font-bold  text-white w-2/4 mx-auto">
+        <div className=" absolute inset-0 mx-auto text-center container top-60">
+          <div className="md:w-7/8 w-full md:px-10 px-4 mx-auto">
+            <div className="box-content  md:pt-8 pt-2 md:py-2  md:px-4 0">
+              <h2 className="md:text-5xl/tight text-3xl/tight font-bold  text-white md:w-2/4 w-full mx-auto">
                 Track your package in here now !
               </h2>
 
@@ -64,7 +64,7 @@ export default function Home() {
                   className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 
   text-center placeholder:text-gray-400
   focus:outline-none sm:text-sm/6 bg-amber-50 
-  w-3/5 mx-auto h-12 rounded-4xl"
+  md:w-3/5 w-full mx-auto h-12 rounded-2xl"
                 />
               </div>
               <div className="hero-button flex flex-row  md:gap-8 gap-2 py-4 justify-center">
@@ -92,7 +92,10 @@ export default function Home() {
                 target="_blank"
                 className="flex items-center gap-4"
               >
-                <button className="relative bottom-4 text-white bg-blue-500 px-6 py-2 rounded-2xl md:w-60 w-40  md:text-base text-xs hover:bg-[#0F253C]">
+                <button
+                  className="relative md:bottom-4 xs:top-4 text-white bg-blue-500 px-6 py-2 rounded-2xl md:w-60 w-40   
+                md:text-base text-xs hover:bg-[#0F253C]"
+                >
                   Create New Login
                 </button>
               </Link>
