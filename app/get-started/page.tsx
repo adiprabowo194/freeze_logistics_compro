@@ -122,7 +122,7 @@ export default function Page() {
             </p>
           </div>
         </div>
-        <Toaster position="top-right" />
+        {/* <Toaster position="top-right" /> */}
         <form ref={formRef} action={formAction} className="w-full">
           <div className="w-full md:w-2/4 grid grid-cols-1 md:grid-cols-2 mx-auto gap-4 px-6">
             <div className="pb-4">

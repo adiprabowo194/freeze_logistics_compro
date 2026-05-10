@@ -134,7 +134,11 @@ function NavbarLink({ active, setActive }: NavbarLinkProps) {
         z-50
       `}
         >
-          <Link href="/get-started" className="flex items-center gap-4">
+          <Link
+            href="https://app.freezelogistics.com.au"
+            target="_blank"
+            className="flex items-center gap-4"
+          >
             <button
               onClick={handleClose}
               className={`
@@ -146,7 +150,7 @@ function NavbarLink({ active, setActive }: NavbarLinkProps) {
             md:bg-blue-500 [#0F253C] md:text-white md:shadow-none hover:bg-[#0F253C]
           `}
             >
-              Get Started
+              Login
             </button>
           </Link>
         </div>

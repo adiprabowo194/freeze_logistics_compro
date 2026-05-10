@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
         const raw = item.get(); // Mengambil data objek mentah
         return {
           value: raw.id,
-          label: `${raw.suburb}, ${raw.postcode}`,
+          label: `${raw.suburb.toUpperCase()}, ${raw.state.toUpperCase()}, ${raw.postcode.toUpperCase()}`,
         };
       }),
     );

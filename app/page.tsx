@@ -32,7 +32,7 @@ export default function Home() {
                 Trusted by 200+ Australian businesses
               </p>
             </div> */}
-            <h1 className="md:text-5xl/tight text-4xl/tight font-bold text-center  px-2 md:px-8 py-6">
+            <h1 className="md:text-5xl/tight text-4xl/tight font-bold text-center  px-2 md:px-8 py-6 pt-8 md:pt-0">
               <div className="">Australia’s Smarter</div>
               <div className="bg-[linear-gradient(90deg,#4267D7_32%,#3ACDFF_100%)] bg-clip-text text-transparent">
                 Way to Manage Cold Freight
@@ -55,13 +55,10 @@ export default function Home() {
               Create Free Login
             </button>
           </Link>
-          <Link
-            href="https://app.freezelogistics.com.au"
-            target="_blank"
-            className="flex items-center gap-4"
-          >
+
+          <Link href="/get-started" className="flex items-center gap-4">
             <button className="border border-gray-950 px-6 py-2 rounded-2xl md:w-40 w-30 md:text-base text-xs hover:bg-[#0F253C] hover:text-white">
-              Login
+              Enquire Now
             </button>
           </Link>
         </div>
