@@ -132,7 +132,7 @@ export default function Page() {
               <input
                 className="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-2xl focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="PT. Example Corp"
+                placeholder="Insert Company Name"
                 name="company_name"
               />
               {state?.errors?.company_name && (
