@@ -3,7 +3,6 @@
 import { Resend } from "resend";
 import { emailTemplate } from "@/lib/emailTemplate";
 
-// Mengambil API Key aman dari environment variable (.env.local)
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function handleContactSubmit(prevState: any, formData: FormData) {
@@ -15,26 +14,34 @@ export async function handleContactSubmit(prevState: any, formData: FormData) {
   const suburb = formData.get("suburb") as string;
   const enquiry = formData.get("enquiry") as string;
 
-  // Validasi Backend Sederhana
+  // Validasi Backend dengan Bahasa Inggris yang benar
   const errors: Record<string, string> = {};
-  if (!contact_name) errors.contact_name = "Contact name wajib diisi";
-  if (!email) errors.email = "Email wajib diisi";
-  if (!contact_number) errors.contact_number = "Contact number wajib diisi";
-  if (!street_address) errors.street_address = "Street address wajib diisi";
-  if (!suburb) errors.suburb = "Suburb wajib diisi";
-  if (!enquiry) errors.enquiry = "Enquiry wajib diisi";
+  if (!contact_name) errors.contact_name = "Contact name is required";
+  if (!email) errors.email = "Email address is required";
+  if (!contact_number) errors.contact_number = "Contact number is required";
+  if (!street_address) errors.street_address = "Street address is required";
+  if (!suburb) errors.suburb = "Suburb selection is required";
+  if (!enquiry) errors.enquiry = "Enquiry message is required";
+
+  // Validasi format email sederhana tambahan
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.email = "Please enter a valid email address";
+  }
 
   if (Object.keys(errors).length > 0) {
-    return { success: false, errors };
+    return {
+      success: false,
+      errors,
+      message: "Please fix the errors in the form.",
+      timestamp: Date.now(),
+    };
   }
 
   try {
-    // Eksekusi pengiriman email saja
+    // Eksekusi pengiriman email saja tanpa customerCandidate
     await resend.emails.send({
-      from: "Freeze Logistics Web <onboarding@resend.dev>", // Ganti ke domain asli Anda jika sudah production
-      to: process.env.EMAIL_REGISTER_SENDING
-        ? [process.env.EMAIL_REGISTER_SENDING]
-        : ["admin@freezelogistics.com.au"], // Email tujuan penerima internal tim Anda
+      from: "Freeze Logistics Web <onboarding@resend.dev>",
+      to: ["adiprabowo194@gmail.com"],
       subject: `New Contact Enquiry from ${contact_name}`,
       html: emailTemplate({
         company_name,
@@ -47,11 +54,18 @@ export async function handleContactSubmit(prevState: any, formData: FormData) {
       }),
     });
 
-    return { success: true, errors: {} };
+    return {
+      success: true,
+      errors: {},
+      message: "Thank you! Your message has been sent successfully.",
+      timestamp: Date.now(),
+    };
   } catch (error) {
     return {
       success: false,
       errors: { root: "Failed to send email. Please try again later." },
+      message: "An error occurred while sending email. Please try again.",
+      timestamp: Date.now(),
     };
   }
 }
