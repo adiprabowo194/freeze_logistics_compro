@@ -1,12 +1,13 @@
 "use client";
 
 import Footer from "@/components/Footer";
-import { useContactForm } from "@/hooks/useContactForm";
 import SubmitButton from "@/components/SubmitButton";
 import { Toaster } from "react-hot-toast";
+import { handleContactSubmit } from "@/app/actions/contact";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useActionState, useEffect, useRef } from "react";
+import { toast } from "react-hot-toast";
 
 const AsyncSelect = dynamic(() => import("react-select/async"), {
   ssr: false,
@@ -20,10 +21,24 @@ type OptionType = {
 
 export default function Page() {
   const [selectedSuburb, setSelectedSuburb] = useState<OptionType | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const { state, formAction, formRef } = useContactForm(() => {
-    setSelectedSuburb(null);
+  // Menggunakan useActionState untuk menghubungkan Form dengan Server Action
+  const [state, formAction] = useActionState(handleContactSubmit, {
+    success: false,
+    errors: {},
   });
+
+  // Efek samping ketika email berhasil atau gagal dikirim
+  useEffect(() => {
+    if (state?.success) {
+      toast.success("Email sent successfully!");
+      formRef.current?.reset(); // Mengosongkan field text input
+      setSelectedSuburb(null); // Mengosongkan field async select suburb
+    } else if (state?.errors?.root) {
+      toast.error(state.errors.root);
+    }
+  }, [state]);
 
   const loadOptions = async (inputValue: string): Promise<OptionType[]> => {
     const res = await fetch(`/api/coverage-areas?q=${inputValue}`);
@@ -33,6 +48,8 @@ export default function Page() {
 
   return (
     <div className="py-8">
+      <Toaster position="top-right" />
+
       <section className="flex md:flex-row flex-col w-full md:h-[480px] h-[520px] container-full mx-auto">
         <div className="bg-blue-500 md:w-1/2 w-full h-full flex items-center px-6 md:px-16 pt-4 mx-auto">
           <div className="max-w-xl absolute">
@@ -41,26 +58,22 @@ export default function Page() {
             </h1>
             <p className="md:text-base text-sm text-center md:text-left text-white py-4 mx-auto tracking-wider">
               Experience premium chilled and frozen product distribution{" "}
-              <span
-                className="block
-              "
-              >
-                with the highest quality standards.
-              </span>
+              <span className="block">with the highest quality standards.</span>
             </p>
           </div>
         </div>
 
         <div
-          className="md:w-1/2 w-full md:h-[260px] h-[420px] md:h-full bg-cover  bg-no-repeat"
+          className="md:w-1/2 w-full md:h-[260px] h-[420px] md:h-full bg-cover bg-no-repeat"
           style={{
             backgroundImage: "url('/assets/truck_freeze_logistics.webp')",
           }}
         />
       </section>
-      <section className="AnyTemperature flex flex-col items-center w-full  container mx-auto py-16">
+
+      <section className="AnyTemperature flex flex-col items-center w-full container mx-auto py-16">
         <div className="box-content py-2">
-          <h1 className="md:text-5xl/tight text-4xl/tight font-bold text-center  px-2 md:px-8">
+          <h1 className="md:text-5xl/tight text-4xl/tight font-bold text-center px-2 md:px-8">
             <div>End-to-End Solutions for</div>
             <div className="bg-[linear-gradient(90deg,#4267D7_32%,#3ACDFF_100%)] bg-clip-text text-transparent">
               Your Business
@@ -108,9 +121,10 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <section className="AnyTemperature flex flex-col items-center w-full  container mx-auto py-8 px-2">
+
+      <section className="AnyTemperature flex flex-col items-center w-full container mx-auto py-8 px-2">
         <div className="box-content py-2">
-          <h1 className="md:text-5xl/tight text-3xl/tight font-bold text-center  px-2 md:px-8">
+          <h1 className="md:text-5xl/tight text-3xl/tight font-bold text-center px-2 md:px-8">
             <div className="bg-[linear-gradient(90deg,#4267D7_32%,#3ACDFF_100%)] bg-clip-text text-transparent">
               Get In Touch With Us
             </div>
@@ -122,7 +136,7 @@ export default function Page() {
             </p>
           </div>
         </div>
-        {/* <Toaster position="top-right" /> */}
+
         <form ref={formRef} action={formAction} className="w-full">
           <div className="w-full md:w-2/4 grid grid-cols-1 md:grid-cols-2 mx-auto gap-4 px-6">
             <div className="pb-4">
@@ -135,10 +149,8 @@ export default function Page() {
                 placeholder="Insert Company Name"
                 name="company_name"
               />
-              {state?.errors?.company_name && (
-                <p className="text-red-500">{state.errors.company_name}</p>
-              )}
             </div>
+
             <div className="pb-4">
               <span className="uppercase text-sm text-gray-600 font-bold">
                 Contact Name *
@@ -148,25 +160,33 @@ export default function Page() {
                 type="text"
                 placeholder="Full Name"
                 name="contact_name"
+                required
               />
               {state?.errors?.contact_name && (
-                <p className="text-red-500">{state.errors.contact_name}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {state.errors.contact_name}
+                </p>
               )}
             </div>
+
             <div className="pb-4">
               <span className="uppercase text-sm text-gray-600 font-bold">
                 Email *
               </span>
               <input
                 className="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-2xl focus:outline-none focus:shadow-outline"
-                type="text"
+                type="email"
                 placeholder="email@company.com"
                 name="email"
+                required
               />
               {state?.errors?.email && (
-                <p className="text-red-500">{state.errors.email}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {state.errors.email}
+                </p>
               )}
             </div>
+
             <div className="pb-4">
               <span className="uppercase text-sm text-gray-600 font-bold">
                 Contact Number *
@@ -176,36 +196,37 @@ export default function Page() {
                 type="text"
                 placeholder="0412 345 678"
                 name="contact_number"
+                required
               />
               {state?.errors?.contact_number && (
-                <p className="text-red-500">{state.errors.contact_number}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {state.errors.contact_number}
+                </p>
               )}
             </div>
-            {/* address */}
+
             <div className="pb-4">
               <span className="uppercase text-sm text-gray-600 font-bold">
                 Street Address *
               </span>
-
               <input
                 className="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 type="text"
                 placeholder="Full Street Address"
                 name="street_address"
+                required
               />
-
               {state?.errors?.street_address && (
-                <p className="text-red-500 mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {state.errors.street_address}
                 </p>
               )}
             </div>
-            {/* SUBURB */}
+
             <div className="pb-4">
               <span className="uppercase text-sm text-gray-600 font-bold">
                 Suburb *
               </span>
-
               <div className="mt-2">
                 <AsyncSelect
                   cacheOptions
@@ -236,21 +257,19 @@ export default function Page() {
                   }}
                 />
               </div>
-
-              {/* hidden input */}
               <input
                 type="hidden"
                 name="suburb"
                 value={selectedSuburb?.label || ""}
               />
-
               {state?.errors?.suburb && (
-                <p className="text-red-500 mt-1 text-sm">
-                  {state.errors.suburb[0]}
+                <p className="text-red-500 text-xs mt-1">
+                  {state.errors.suburb}
                 </p>
               )}
             </div>
           </div>
+
           <div className="w-full md:w-2/4 grid grid-cols-1 mx-auto gap-4 px-6">
             <div className="pb-2">
               <span className="uppercase text-sm text-gray-600 font-bold">
@@ -260,9 +279,12 @@ export default function Page() {
                 className="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-2xl focus:outline-none focus:shadow-outline"
                 placeholder="Your Question"
                 name="enquiry"
+                required
               />
               {state?.errors?.enquiry && (
-                <p className="text-red-500">{state.errors.enquiry}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {state.errors.enquiry}
+                </p>
               )}
             </div>
             <div className="pb-4">
@@ -271,11 +293,12 @@ export default function Page() {
           </div>
         </form>
       </section>
-      <section className="WhyLove w-full md:px-8 py-4 container-full  bg-[linear-gradient(61deg,#0D1A2A_0%,#0F253C_66%,#17374E_100%)]">
+
+      <section className="WhyLove w-full md:px-8 py-4 container-full bg-[linear-gradient(61deg,#0D1A2A_0%,#0F253C_66%,#17374E_100%)]">
         <div className="w-7/8 mx-auto">
-          <div className="box-content  pt-8 py-8 md:px-4">
+          <div className="box-content pt-8 py-8 md:px-4">
             <h2 className="md:text-4xl/tight text-4xl/tight font-bold text-center tracking-widest text-white">
-               Freeze Logistic{" "}
+              Freeze Logistic{" "}
               <div className="bg-[linear-gradient(90deg,#4267D7_32%,#3ACDFF_100%)] bg-clip-text text-transparent inline-block">
                 — B2B Cold Chain Solutions
               </div>
@@ -289,7 +312,6 @@ export default function Page() {
                 </p>
               </div>
             </div>
-
             <div className="w-full md:w-[30%] border border-gray-200 rounded-2xl hover:bg-[#4267D7] group transition-colors duration-300 hover:shadow-lg">
               <div className="flex flex-col text-center items-center py-4">
                 <p className="py-2 px-1 md:text-lg text-xs">
@@ -297,7 +319,6 @@ export default function Page() {
                 </p>
               </div>
             </div>
-
             <div className="w-full md:w-[30%] border border-gray-200 rounded-2xl hover:bg-[#4267D7] group transition-colors duration-300 hover:shadow-lg">
               <div className="flex flex-col text-center items-center py-4">
                 <p className="py-2 px-1 md:text-lg text-xs">
@@ -306,21 +327,18 @@ export default function Page() {
                 </p>
               </div>
             </div>
-
             <div className="w-full md:w-[30%] border border-gray-200 rounded-2xl hover:bg-[#4267D7] group transition-colors duration-300 hover:shadow-lg">
               <div className="flex flex-col text-center items-center py-4">
                 <p className="py-2 px-1 md:text-lg text-xs">
-                  Dedicated Support for every
+                  Dedicated Support for every{" "}
                   <span className="md:block">Freeze Logistic customer</span>
                 </p>
               </div>
             </div>
-
             <div className="w-full md:w-[30%] border border-gray-200 rounded-2xl hover:bg-[#4267D7] group transition-colors duration-300 hover:shadow-lg">
               <div className="flex flex-col text-center items-center py-4">
                 <p className="py-2 px-1 md:text-lg text-xs">
-                  No Credit
-                  <span className="md:block">Card Required</span>
+                  No Credit <span className="md:block">Card Required</span>
                 </p>
               </div>
             </div>
