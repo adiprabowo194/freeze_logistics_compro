@@ -166,7 +166,7 @@ export default function Page() {
               </span>
               <input
                 className="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-2xl focus:outline-none focus:shadow-outline"
-                type="text"
+                type="email"
                 placeholder="email@company.com"
                 name="email"
               />
